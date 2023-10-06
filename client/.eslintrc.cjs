@@ -16,6 +16,6 @@ module.exports = {
       'warn',
       { allowConstantExport: true },
     ],
-    'react/jsx-uses-react': 'on',
+    'react/jsx-uses-react': 1
   },
 }
