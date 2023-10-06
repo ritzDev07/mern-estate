@@ -78,7 +78,7 @@ const SignUp = () => {
                     Welcome to RitzEstate
                 </h1>
                 {error && (
-                    <p className='p-3 rounded-lg bg-opacity-70 bg-white text-red-600 text-center mb-7'>
+                    <p className='p-3 rounded-lg bg-opacity-70 text-red-600 text-center mb-7'>
                         {error}
                     </p>
                 )}
@@ -138,7 +138,7 @@ const SignUp = () => {
                 </div>
 
             </section>
-            
+
         </div>
     )
 }
