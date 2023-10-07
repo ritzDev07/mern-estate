@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import signupImg from '../assets/images/signupBg.png';
 import { Link, useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { signInStart, signInSuccess, signInFailure } from '../redux/user/userSlice';
+
 
 // Reusable Input component
 const InputField = ({ type, id, placeholder, onChange }) => (
@@ -16,9 +19,9 @@ const InputField = ({ type, id, placeholder, onChange }) => (
 
 const SignIn = () => {
     const [formData, setFormData] = useState({});
-    const [error, setError] = useState(null);
-    const [loading, setLoading] = useState(false);
+    const { loading, error } = useSelector((state) => state.user);
     const navigate = useNavigate();
+    const dispatch = useDispatch();
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.id]: e.target.value });
@@ -29,13 +32,12 @@ const SignIn = () => {
 
         // Check if any of the form fields are blank
         if (!formData.email || !formData.password) {
-            setError('Please fill in all fields. 😭');
+            dispatch(signInFailure('Please fill in all fields. 😭'));
             return;
         }
 
         try {
-            setLoading(true);
-            setError(null);
+            dispatch(signInStart());
 
             const res = await fetch('/api/auth/signin', {
                 method: 'POST',
@@ -50,17 +52,15 @@ const SignIn = () => {
 
             if (res.status !== 200) {
                 // Handle login failure here
-                setLoading(false);
-                setError('Invalid email or password. 😬');
-            } else {
-                // Login successful
-                setLoading(false);
-                setError(null);
-                navigate('/');
+                dispatch(signInFailure(data.message));
+                return;
             }
+            // Login successful
+            dispatch(signInSuccess(data));
+            navigate('/');
+
         } catch (error) {
-            setLoading(false);
-            setError('Something went wrong. 🤔');
+            dispatch(signInFailure(error.message));
         }
     };
 
