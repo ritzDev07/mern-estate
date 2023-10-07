@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import signupImg from '../assets/images/signupBg.png';
 import { Link, useNavigate } from 'react-router-dom';
 import { AiFillCheckCircle, AiFillCloseCircle } from 'react-icons/ai'
+import OAuth from '../components/OAuth';
 
 // Reusable Input component
 const InputField = ({ type, id, placeholder, onChange }) => (
@@ -127,6 +128,8 @@ const SignUp = () => {
                             loading ? 'Loading...' : 'Sign up'
                         }
                     </button>
+
+                    <OAuth/>
 
                 </form>
 
