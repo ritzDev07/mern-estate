@@ -20,7 +20,7 @@ export const updateUser = async (req, res, next) => {
 
         // If a new password is provided, hash it
         if (req.body.password) {
-            req.biody.password = bcryptjs.hashSync(req.body.password, 10);
+            req.body.password = bcryptjs.hashSync(req.body.password, 10);
         }
 
         // Update the user's information in the database
