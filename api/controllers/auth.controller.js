@@ -91,4 +91,9 @@ export const google = async (req, res, next) => {
         // Handle any errors that occur during the authentication process
         next(error);
     }
-}
+};
+
+//SignOut
+export const signout = (req, res) => {
+    res.clearCookie('access_token').status(200).json({ message: 'Signout Success!' });
+};

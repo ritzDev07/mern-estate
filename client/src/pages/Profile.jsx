@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { getDownloadURL, getStorage, ref, uploadBytesResumable } from 'firebase/storage';
 import { app } from '../firebase';
 import { useDispatch } from 'react-redux';
-import { updateUserStart, updateUserSuccess, updateUserFailure, deleteUserStart, deleteUserSuccess, deleteUserFailure } from '../redux/user/userSlice';
+import { updateUserStart, updateUserSuccess, updateUserFailure, deleteUserStart, deleteUserSuccess, deleteUserFailure, signOut } from '../redux/user/userSlice';
 
 const Profile = () => {
     const { currentUser, loading, error } = useSelector(state => state.user);
@@ -100,6 +100,16 @@ const Profile = () => {
         }
     };
 
+    const handleSignout = async () => {
+        try {
+            await fetch('/api/auth/signout');
+            dispatch(signOut());
+
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
     const inputStyles = 'bg-slate-200 rounded-lg p-3 text-green-900 ';
     const buttonStyles = 'bg-slate-700 text-white p-3 rounded-lg uppercase hover:opacity-95 disabled:opacity-80';
 
@@ -178,7 +188,13 @@ const Profile = () => {
                     Delete Account
                 </span>
 
-                <span className='text-red-700 cursor-pointer'>Sign out</span>
+                <span
+                    className='text-red-700 cursor-pointer'
+                    onClick={handleSignout}
+                >
+                    Sign out
+                </span>
+
             </div>
 
             <p className=' text-red-600 text-center mt-3'>
