@@ -7,13 +7,13 @@ const CreateListing = () => {
     const [formData, setFormData] = useState({ imageUrls: [], });
     const [imageUploadError, setImageUploadError] = useState(false);
     const [imagePercent, setImagePercent] = useState(null);
-    console.log(formData);
-
-
-
+    const [uploading, setUplaoding] = useState(false);
+    
 
     const handleImageSubmit = (e) => {
         if (files.length > 0 && files.length + formData.imageUrls.length < 7) {
+            setUplaoding(true);
+            setImageUploadError(false);
             const promises = [];
             for (let fileIndex = 0; fileIndex < files.length; fileIndex++) {
                 promises.push(storeImage(files[fileIndex]));
@@ -23,14 +23,17 @@ const CreateListing = () => {
                     ...formData, imageUrls: formData.imageUrls.concat(urls),
                 });
                 setImageUploadError(false);
+                setUplaoding(false);
+
             })
                 .catch((error) => {
                     setImageUploadError('Image upload failed. Max 2MB per image.');
+                    setUplaoding(false);
                 });
 
         } else {
             setImageUploadError('You can Only upload 6 images per listing');
-
+            setUplaoding(false);
         }
 
     };
@@ -62,7 +65,14 @@ const CreateListing = () => {
                 }
             );
         });
-    }
+    };
+
+    const handleRemoveImage = (index) => {
+        setFormData({
+            ...formData,
+            imageUrls: formData.imageUrls.filter((_, i) => i !== index),
+        });
+    };
 
 
     // Define reusable CSS classes for common styles
@@ -160,9 +170,10 @@ const CreateListing = () => {
                             The first Images will be the cover (max 6)
                         </span>
                     </p>
+
                     <div className='flex gap-4'>
                         <input
-                            className={`p-3 border border-gray-300 rounded w-full`}
+                            className={`p-3 border border-gray-300 rounded w-full text-sm`}
                             type="file"
                             name="images"
                             id="images"
@@ -170,31 +181,49 @@ const CreateListing = () => {
                             multiple
                             onChange={(e) => setFiles(e.target.files)}
                         />
+
                         <button
+                            className={`${buttonStyles} w-28 text-green-800 border-green-700 hover:shadow-lg disabled::opacity-80`}
                             type='button'
+                            disabled={uploading}
                             onClick={handleImageSubmit}
-                            className={`${buttonStyles} text-green-800 border-green-700 hover:shadow-lg disabled::opacity-80`}>
-                            Upload
+                        >
+                            {
+                                uploading ? `${imagePercent}%` : 'Upload'
+                            }
                         </button>
                     </div>
+
                     <p className='text-center text-sm'>
                         {
                             imageUploadError ? (
                                 <span className='text-red-800'>{imageUploadError}</span>
-                            ) : imagePercent >= 1 && imagePercent < 100 ? (
-                                <span className='text-slate-700'>
-                                    {`Uploading: ${imagePercent}%`}
-                                </span>
+                            ) : formData.imageUrls.length === 0 ? (
+                                null
                             ) : imagePercent === 100 ? (
                                 <span className='text-green-700 font-semibold'> {`Image(s) upload successfully 😊 (${formData.imageUrls.length} images)`}</span>
                             ) : null
                         }
                     </p>
                     {
-                        formData.imageUrls.length > 0 && formData.imageUrls.map((url) => (
-                            <div className='flex justify-between p-3 border items-center hover:bg-green-100' key={url}>
-                                <img src={url} alt="listing image" className='w-20 h-20 object-contain rounded-lg' />
-                                <button type='button' className='p-3 text-red-700 rounded-lg uppercase hover:bg-red-800 hover:text-white'>Delete</button>
+                        formData.imageUrls.length > 0 && formData.imageUrls.map((url, index) => (
+                            <div
+                                className='flex justify-between p-3 border items-center hover:bg-green-100'
+                                key={url}
+                            >
+                                <img
+                                    className='w-20 h-20 object-contain rounded-lg'
+                                    src={url}
+                                    alt="listing image"
+                                />
+
+                                <button
+                                    className='p-3 text-red-700 rounded-lg uppercase hover:bg-red-800 hover:text-white'
+                                    type='button'
+                                    onClick={() => handleRemoveImage(index)}
+                                >
+                                    Delete
+                                </button>
                             </div>
                         ))
                     }
@@ -204,7 +233,7 @@ const CreateListing = () => {
 
                 </div>
             </form>
-        </main>
+        </main >
     )
 }
 
