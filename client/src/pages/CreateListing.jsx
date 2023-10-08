@@ -1,6 +1,70 @@
-import React from 'react';
+import { getDownloadURL, getStorage, ref, uploadBytesResumable } from 'firebase/storage';
+import React, { useState } from 'react';
+import { app } from '../firebase';
 
 const CreateListing = () => {
+    const [files, setFiles] = useState([]);
+    const [formData, setFormData] = useState({ imageUrls: [], });
+    const [imageUploadError, setImageUploadError] = useState(false);
+    const [imagePercent, setImagePercent] = useState(null);
+    console.log(formData);
+
+
+
+
+    const handleImageSubmit = (e) => {
+        if (files.length > 0 && files.length + formData.imageUrls.length < 7) {
+            const promises = [];
+            for (let fileIndex = 0; fileIndex < files.length; fileIndex++) {
+                promises.push(storeImage(files[fileIndex]));
+            }
+            Promise.all(promises).then((urls) => {
+                setFormData({
+                    ...formData, imageUrls: formData.imageUrls.concat(urls),
+                });
+                setImageUploadError(false);
+            })
+                .catch((error) => {
+                    setImageUploadError('Image upload failed. Max 2MB per image.');
+                });
+
+        } else {
+            setImageUploadError('You can Only upload 6 images per listing');
+
+        }
+
+    };
+
+    const storeImage = async (file) => {
+        return new Promise((resolve, reject) => {
+            const storage = getStorage(app);
+            const fileName = new Date().getTime() + file.name;
+            const storageRef = ref(storage, fileName);
+            const uploadTask = uploadBytesResumable(storageRef, file);
+
+            uploadTask.on(
+                'state_changed',
+                (snapshot) => {
+                    const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                    setImagePercent(Math.round(progress));
+                },
+                (error) => {
+                    reject(error);
+                },
+                () => {
+                    getDownloadURL(uploadTask.snapshot.ref)
+                        .then((downloadURL) => {
+                            resolve(downloadURL);
+                        })
+                        .catch((error) => {
+                            reject(error); // Handle any potential errors in getting the download URL
+                        });
+                }
+            );
+        });
+    }
+
+
     // Define reusable CSS classes for common styles
     const inputStyles = 'border p-3 rounded-lg';
     const flexGapStyles = 'flex gap-2';
@@ -104,14 +168,40 @@ const CreateListing = () => {
                             id="images"
                             accept='image/*'
                             multiple
+                            onChange={(e) => setFiles(e.target.files)}
                         />
-                        <button className={`${buttonStyles} text-green-800 border-green-700 hover:shadow-lg disabled::opacity-80`}>
+                        <button
+                            type='button'
+                            onClick={handleImageSubmit}
+                            className={`${buttonStyles} text-green-800 border-green-700 hover:shadow-lg disabled::opacity-80`}>
                             Upload
                         </button>
                     </div>
+                    <p className='text-center text-sm'>
+                        {
+                            imageUploadError ? (
+                                <span className='text-red-800'>{imageUploadError}</span>
+                            ) : imagePercent >= 1 && imagePercent < 100 ? (
+                                <span className='text-slate-700'>
+                                    {`Uploading: ${imagePercent}%`}
+                                </span>
+                            ) : imagePercent === 100 ? (
+                                <span className='text-green-700 font-semibold'> {`Image(s) upload successfully 😊 (${formData.imageUrls.length} images)`}</span>
+                            ) : null
+                        }
+                    </p>
+                    {
+                        formData.imageUrls.length > 0 && formData.imageUrls.map((url) => (
+                            <div className='flex justify-between p-3 border items-center hover:bg-green-100' key={url}>
+                                <img src={url} alt="listing image" className='w-20 h-20 object-contain rounded-lg' />
+                                <button type='button' className='p-3 text-red-700 rounded-lg uppercase hover:bg-red-800 hover:text-white'>Delete</button>
+                            </div>
+                        ))
+                    }
                     <button className={`${buttonStyles} bg-green-700 text-white`}>
                         Create List
                     </button>
+
                 </div>
             </form>
         </main>
