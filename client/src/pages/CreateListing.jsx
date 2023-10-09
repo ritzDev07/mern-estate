@@ -1,5 +1,5 @@
 import { getDownloadURL, getStorage, ref, uploadBytesResumable } from 'firebase/storage';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { app } from '../firebase';
 
 const CreateListing = () => {
@@ -8,13 +8,14 @@ const CreateListing = () => {
     const [imageUploadError, setImageUploadError] = useState(false);
     const [imagePercent, setImagePercent] = useState(null);
     const [uploading, setUplaoding] = useState(false);
-    
+
 
     const handleImageSubmit = (e) => {
         if (files.length > 0 && files.length + formData.imageUrls.length < 7) {
             setUplaoding(true);
             setImageUploadError(false);
             const promises = [];
+
             for (let fileIndex = 0; fileIndex < files.length; fileIndex++) {
                 promises.push(storeImage(files[fileIndex]));
             }
@@ -24,6 +25,7 @@ const CreateListing = () => {
                 });
                 setImageUploadError(false);
                 setUplaoding(false);
+                setFiles([]);
 
             })
                 .catch((error) => {
@@ -31,12 +33,28 @@ const CreateListing = () => {
                     setUplaoding(false);
                 });
 
+        } else if (files.length == 0) {
+
+            setImageUploadError('Please select a photo');
+
         } else {
+
             setImageUploadError('You can Only upload 6 images per listing');
             setUplaoding(false);
+
         }
 
     };
+
+    useEffect(() => {
+        // Clear the error message after 3 seconds when it's present
+        if (imageUploadError) {
+            const timeoutId = setTimeout(() => {
+                setImageUploadError(null);
+            }, 3000); // 3000 milliseconds (3 seconds)
+            return () => clearTimeout(timeoutId);
+        }
+    }, [imageUploadError]);
 
     const storeImage = async (file) => {
         return new Promise((resolve, reject) => {
@@ -74,14 +92,14 @@ const CreateListing = () => {
         });
     };
 
-
     // Define reusable CSS classes for common styles
     const inputStyles = 'border p-3 rounded-lg';
-    const flexGapStyles = 'flex gap-2';
-    const numberInputStyles = 'p-3 border border-gray-300 rounded-lg';
+    const numberInputStyles = ' w-[60px] p-1 border border-gray-300 rounded text-center font-bold text-green-900 ';
     const buttonStyles = 'p-3 border rounded-lg uppercase hover:opacity-95';
+    const absolutepStyles = 'top-0 left-0 text-white text-xs w-full absolute text-start p-1 bg-green-600';
+    const divStyle = 'relative  bg-green-200 p-2';
 
-    const checkboxInfoArray = ['sell', 'rent', 'parking', 'furnished', 'offer'];
+    const checkboxInfoArray = ['parking', 'furnished', 'offer'];
 
     const inputInfoArray = [
         { name: 'bedroom', label: 'Beds', min: 1, max: 10 },
@@ -90,14 +108,38 @@ const CreateListing = () => {
         { name: 'discountPrice', label: 'Discounted Price', min: 100 },
     ];
 
+    const InputGroup = ({ name, min, max, label }) => (
+        <div className="flex items-center gap-2 pt-3">
+            <input
+                type="number"
+                name={name}
+                id={name}
+                required
+                min={min}
+                max={max}
+                className={`${numberInputStyles}`}
+            />
+
+            <div className="flex flex-col items-center">
+                <p>{label}</p>
+                {(name === 'regularPrice' || name === 'discountPrice') && (
+                    <span className="text-xs text-green-800"> ($/month)</span>
+                )}
+            </div>
+
+        </div>
+    );
 
     return (
         <main className='p-3 max-w-4xl mx-auto'>
+
             <h1 className='text-slate-800 text-3xl font-semibold text-left my-7'>
                 Create Listing
             </h1>
-            <form className='flex flex-col sm:flex-row gap-4'>
-                <div className='flex flex-col gap-4 flex-1'>
+
+            <form className='flex flex-col sm:flex-row gap-6 '>
+
+                <div className='flex flex-col gap-4 w-full sm:w-96 p-3'>
                     {/* Reuse inputStyles for common input styles */}
                     <input
                         type="text"
@@ -132,41 +174,70 @@ const CreateListing = () => {
                         id="address"
                         className={inputStyles}
                     />
-
-                    <div className={'flex gap-6 flex-wrap text-slate-800'}>
-
-                        {checkboxInfoArray.map(option => (
-                            <div key={option} className='flex gap-2'>
-                                <input type="checkbox" name={option} id={option} className='w-5' />
-                                <span>{option.charAt(0).toUpperCase() + option.slice(1)}</span>
+                    <div className='flex flex-row text-sm gap-2'>
+                        <div className={`${divStyle} w-[100px]`}>
+                            <p className={`${absolutepStyles}`}>
+                                Sell or Rent
+                            </p>
+                            <div className=' flex items-center flex-wrap text-slate-800 mt-5'>
+                                <div key="sell" className='flex gap-2 my-1'>
+                                    <input type="checkbox" name="sell" id="sell" className='w-5' />
+                                    <span>Sell</span>
+                                </div>
+                                <div key="rent" className='flex gap-2 my-1'>
+                                    <input type="checkbox" name="rent" id="rent" className='w-5' />
+                                    <span>Rent</span>
+                                </div>
                             </div>
-                        ))}
+                        </div>
 
+                        <div className={`${divStyle} w-[200px]`}>
+                            <div className='mt-5'>
+                                <p className={`${absolutepStyles}`}>
+                                    Others
+                                </p>
+                                {checkboxInfoArray.map(option => (
+                                    <div key={option} className='flex gap-2 py-1'>
+                                        <input type="checkbox" name={option} id={option} className='w-5' />
+                                        <span>{option.charAt(0).toUpperCase() + option.slice(1)}</span>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+
+                        <div className={`${divStyle} w-[200px]`}>
+                            <div className='mt-3'>
+                                <p className={`${absolutepStyles}`}>
+                                    Bed & Bath
+                                </p>
+                                {
+                                    inputInfoArray.slice(0, 2).map(inputInfo => (
+                                        <InputGroup key={inputInfo.name} {...inputInfo} />
+                                    ))
+                                }
+
+                            </div>
+                        </div>
                     </div>
-                    <div className={`flex flex-wrap ${flexGapStyles} text-slate-800`}>
 
-                        {inputInfoArray.map(inputInfo => (
-                            <div key={inputInfo.name} className='flex items-center gap-2'>
-                                <input
-                                    type="number"
-                                    name={inputInfo.name}
-                                    id={inputInfo.name}
-                                    required
-                                    min={inputInfo.min}
-                                    max={inputInfo.max}
-                                    className={numberInputStyles}
-                                />
-                                <p>{inputInfo.label}</p>
-                            </div>
-                        ))}
+                    <div className='relative bg-green-200 rounded'>
+
+                        <div className='mt-3 p-3 pl-8'>
+                            <p className={`${absolutepStyles}`}>
+                                Regular Price and Discounted Price
+                            </p>
+                            {inputInfoArray.slice(2).map(inputInfo => (
+                                <InputGroup key={inputInfo.name} {...inputInfo} />
+                            ))}
+                        </div>
 
                     </div>
                 </div>
 
-                <div className='flex flex-col flex-1 gap-4 text-slate-800'>
+                <div className='flex flex-col flex-1 p-3 gap-4 text-slate-800'>
                     <p className='font-semibold'>
                         Images:
-                        <span className='font-normal text-gray-600 ml-2'>
+                        <span className='font-normal text-xs text-green-600 ml-2'>
                             The first Images will be the cover (max 6)
                         </span>
                     </p>
@@ -201,10 +272,11 @@ const CreateListing = () => {
                             ) : formData.imageUrls.length === 0 ? (
                                 null
                             ) : imagePercent === 100 ? (
-                                <span className='text-green-700 font-semibold'> {`Image(s) upload successfully 😊 (${formData.imageUrls.length} images)`}</span>
+                                <span className='text-green-700 font-semibold'> {`Image upload successfully 😊 (${formData.imageUrls.length} images)`}</span>
                             ) : null
                         }
                     </p>
+
                     {
                         formData.imageUrls.length > 0 && formData.imageUrls.map((url, index) => (
                             <div
@@ -227,6 +299,7 @@ const CreateListing = () => {
                             </div>
                         ))
                     }
+
                     <button className={`${buttonStyles} bg-green-700 text-white`}>
                         Create List
                     </button>
