@@ -4,13 +4,27 @@ import { app } from '../firebase';
 
 const CreateListing = () => {
     const [files, setFiles] = useState([]);
-    const [formData, setFormData] = useState({ imageUrls: [], });
     const [imageUploadError, setImageUploadError] = useState(false);
     const [imagePercent, setImagePercent] = useState(null);
     const [uploading, setUplaoding] = useState(false);
-
+    const [formData, setFormData] = useState({
+        imageUrls: [],
+        name: 'ritz',
+        description: '',
+        address: '',
+        type: 'rent',
+        bedrooms: 1,
+        batthrooms: 1,
+        regularPrice: 100,
+        discountPrice: 50,
+        offer: false,
+        parking: false,
+        furnished: false,
+    });
+console.log(formData);
 
     const handleImageSubmit = (e) => {
+
         if (files.length > 0 && files.length + formData.imageUrls.length < 7) {
             setUplaoding(true);
             setImageUploadError(false);
@@ -44,6 +58,29 @@ const CreateListing = () => {
 
         }
 
+    };
+
+    const handleChange = (e) => {
+
+        if(e.target.id ==='sell' || e.target.id === 'rent'){
+            setFormData({
+                ...formData,
+                type: e.target.id
+            })
+        }
+        if(e.target.id ==='parking' || e.target.id === 'furnished' || e.target.id === 'offer'){
+            setFormData({
+                ... formData,
+                [e.target.id]:e.target.checked
+            })
+        }
+        if(e.target.type === 'number' || e.target.type === 'text' || e.target.type === 'textarea'){
+            setFormData({
+                ...formData,
+                [e.target.id]: e.target.value
+            })
+        }
+        
     };
 
     useEffect(() => {
@@ -104,8 +141,8 @@ const CreateListing = () => {
     const inputInfoArray = [
         { name: 'bedroom', label: 'Beds', min: 1, max: 10 },
         { name: 'bathrooms', label: 'Baths', min: 1, max: 10 },
-        { name: 'regularPrice', label: 'Regular Price', min: 100 },
-        { name: 'discountPrice', label: 'Discounted Price', min: 100 },
+        { name: 'regularPrice', label: 'Regular Price', min: 100, max: 2000 },
+        { name: 'discountPrice', label: 'Discounted Price', min: 100, max: 2000 },
     ];
 
     const InputGroup = ({ name, min, max, label }) => (
@@ -118,6 +155,8 @@ const CreateListing = () => {
                 min={min}
                 max={max}
                 className={`${numberInputStyles}`}
+                onChange={handleChange}
+                value={formData[name]}
             />
 
             <div className="flex flex-col items-center">
@@ -133,7 +172,7 @@ const CreateListing = () => {
     return (
         <main className='p-3 max-w-4xl mx-auto'>
 
-            <h1 className='text-slate-800 text-3xl font-semibold text-left my-7'>
+            <h1 className='text-slate-800 text-3xl font-semibold text-left my-7 p-3 '>
                 Create Listing
             </h1>
 
@@ -151,6 +190,8 @@ const CreateListing = () => {
                         name="name"
                         id="name"
                         className={inputStyles}
+                        onChange={handleChange}
+                        value={formData.name}
                     />
                     <textarea
                         type="text"
@@ -162,7 +203,10 @@ const CreateListing = () => {
                         name="description"
                         id="description"
                         className={inputStyles}
+                        onChange={handleChange}
+                        value={formData.description}
                     />
+
                     <input
                         type="text"
                         autoComplete="off"
@@ -173,7 +217,10 @@ const CreateListing = () => {
                         name="address"
                         id="address"
                         className={inputStyles}
+                        onChange={handleChange}
+                        value={formData.address}
                     />
+
                     <div className='flex flex-row text-sm gap-2'>
                         <div className={`${divStyle} w-[100px]`}>
                             <p className={`${absolutepStyles}`}>
@@ -181,11 +228,25 @@ const CreateListing = () => {
                             </p>
                             <div className=' flex items-center flex-wrap text-slate-800 mt-5'>
                                 <div key="sell" className='flex gap-2 my-1'>
-                                    <input type="checkbox" name="sell" id="sell" className='w-5' />
+                                    <input
+                                        type="checkbox"
+                                        name="sell"
+                                        id="sell"
+                                        className='w-5'
+                                        onChange={handleChange}
+                                        checked={formData.type === 'sell'}
+                                    />
                                     <span>Sell</span>
                                 </div>
                                 <div key="rent" className='flex gap-2 my-1'>
-                                    <input type="checkbox" name="rent" id="rent" className='w-5' />
+                                    <input
+                                        type="checkbox"
+                                        name="rent"
+                                        id="rent"
+                                        className='w-5'
+                                        onChange={handleChange}
+                                        checked={formData.type === 'rent'}
+                                    />
                                     <span>Rent</span>
                                 </div>
                             </div>
@@ -198,7 +259,14 @@ const CreateListing = () => {
                                 </p>
                                 {checkboxInfoArray.map(option => (
                                     <div key={option} className='flex gap-2 py-1'>
-                                        <input type="checkbox" name={option} id={option} className='w-5' />
+                                        <input
+                                            type="checkbox"
+                                            name={option}
+                                            id={option}
+                                            className='w-5'
+                                            onChange={handleChange}
+                                            checked={formData.option}
+                                        />
                                         <span>{option.charAt(0).toUpperCase() + option.slice(1)}</span>
                                     </div>
                                 ))}
@@ -300,7 +368,9 @@ const CreateListing = () => {
                         ))
                     }
 
-                    <button className={`${buttonStyles} bg-green-700 text-white`}>
+                    <button
+                        className={`${buttonStyles} bg-green-700 text-white`}
+                    >
                         Create List
                     </button>
 
