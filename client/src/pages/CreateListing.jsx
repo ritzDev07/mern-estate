@@ -1,27 +1,48 @@
 import { getDownloadURL, getStorage, ref, uploadBytesResumable } from 'firebase/storage';
 import React, { useEffect, useState } from 'react';
 import { app } from '../firebase';
+import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+
+// Define reusable CSS classes for common styles
+const inputStyles = 'border p-3 rounded-lg';
+const numberInputStyles = ' w-[80px] p-1 border border-gray-300 rounded text-center font-bold text-green-900 ';
+const buttonStyles = 'p-3 border rounded-lg uppercase hover:opacity-95';
+const absolutepStyles = 'top-0 left-0 text-white text-xs w-full absolute text-start p-1 bg-green-600';
+const divStyle = 'relative  bg-green-200 p-2';
+
+const checkboxInfoArray = ['parking', 'furnished', 'offer'];
+
+const inputInfoArray = [
+    { name: 'bedrooms', label: 'Beds', min: 1, max: 10 },
+    { name: 'bathrooms', label: 'Baths', min: 1, max: 10 },
+];
 
 const CreateListing = () => {
     const [files, setFiles] = useState([]);
     const [imageUploadError, setImageUploadError] = useState(false);
     const [imagePercent, setImagePercent] = useState(null);
     const [uploading, setUplaoding] = useState(false);
+
+    const navigate = useNavigate();
+    const { currentUser } = useSelector(state => state.user);
+    const [errorSubmit, setErrorSubmit] = useState(false);
+    const [loadingSubmit, setLoadingSubmit] = useState(false);
     const [formData, setFormData] = useState({
         imageUrls: [],
-        name: 'ritz',
+        name: '',
         description: '',
         address: '',
         type: 'rent',
         bedrooms: 1,
-        batthrooms: 1,
+        bathrooms: 1,
         regularPrice: 100,
-        discountPrice: 50,
+        discountPrice: 0,
         offer: false,
         parking: false,
         furnished: false,
     });
-console.log(formData);
+    console.log(formData);
 
     const handleImageSubmit = (e) => {
 
@@ -57,30 +78,86 @@ console.log(formData);
             setUplaoding(false);
 
         }
-
     };
 
-    const handleChange = (e) => {
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        try {
+            if (formData.imageUrls.length < 1) {
+                setErrorSubmit('You must Upload at least one image');
+                return;
+            }
+            if (+formData.regularPrice < +formData.discountPrice) {
+                setErrorSubmit('Discounted price must be lower than regular price');
+                return;
+            }
 
-        if(e.target.id ==='sell' || e.target.id === 'rent'){
+            setLoadingSubmit(true);
+            setErrorSubmit(false);
+
+            const res = await fetch('/api/listing/create', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    ...formData,
+                    userRef: currentUser._id,
+                }),
+            });
+            const data = await res.json();
+            setLoadingSubmit(false);
+
+
+            if (data.success === false) {
+                setErrorSubmit(data.message);
+            }
+
+            navigate(`/listing/${data._id}`);
+
+        } catch (error) {
+            setErrorSubmit(error.message);
+            setLoadingSubmit(false);
+        }
+    };
+
+
+    const handleRemoveImage = (index) => {
+        setFormData({
+            ...formData,
+            imageUrls: formData.imageUrls.filter((_, i) => i !== index),
+        });
+    };
+
+
+    const handleChange = (e) => {
+        if (e.target.id === 'sell' || e.target.id === 'rent') {
             setFormData({
                 ...formData,
                 type: e.target.id
-            })
+            });
         }
-        if(e.target.id ==='parking' || e.target.id === 'furnished' || e.target.id === 'offer'){
+        if (e.target.id === 'parking' || e.target.id === 'furnished' || e.target.id === 'offer') {
             setFormData({
-                ... formData,
-                [e.target.id]:e.target.checked
-            })
+                ...formData,
+                [e.target.id]: e.target.checked
+            });
         }
-        if(e.target.type === 'number' || e.target.type === 'text' || e.target.type === 'textarea'){
+        if (e.target.type === 'number') {
+            // Ensure the value is converted to a number
+            setFormData({
+                ...formData,
+                [e.target.id]: parseFloat(e.target.value)
+            });
+        }
+
+        if (e.target.type === 'text' || e.target.type === 'textarea') {
             setFormData({
                 ...formData,
                 [e.target.id]: e.target.value
-            })
+            });
         }
-        
+
     };
 
     useEffect(() => {
@@ -92,6 +169,7 @@ console.log(formData);
             return () => clearTimeout(timeoutId);
         }
     }, [imageUploadError]);
+
 
     const storeImage = async (file) => {
         return new Promise((resolve, reject) => {
@@ -115,37 +193,14 @@ console.log(formData);
                             resolve(downloadURL);
                         })
                         .catch((error) => {
-                            reject(error); // Handle any potential errors in getting the download URL
+                            reject(error);
                         });
                 }
             );
         });
     };
 
-    const handleRemoveImage = (index) => {
-        setFormData({
-            ...formData,
-            imageUrls: formData.imageUrls.filter((_, i) => i !== index),
-        });
-    };
-
-    // Define reusable CSS classes for common styles
-    const inputStyles = 'border p-3 rounded-lg';
-    const numberInputStyles = ' w-[60px] p-1 border border-gray-300 rounded text-center font-bold text-green-900 ';
-    const buttonStyles = 'p-3 border rounded-lg uppercase hover:opacity-95';
-    const absolutepStyles = 'top-0 left-0 text-white text-xs w-full absolute text-start p-1 bg-green-600';
-    const divStyle = 'relative  bg-green-200 p-2';
-
-    const checkboxInfoArray = ['parking', 'furnished', 'offer'];
-
-    const inputInfoArray = [
-        { name: 'bedroom', label: 'Beds', min: 1, max: 10 },
-        { name: 'bathrooms', label: 'Baths', min: 1, max: 10 },
-        { name: 'regularPrice', label: 'Regular Price', min: 100, max: 2000 },
-        { name: 'discountPrice', label: 'Discounted Price', min: 100, max: 2000 },
-    ];
-
-    const InputGroup = ({ name, min, max, label }) => (
+    const InputGroup = ({ name, min, max, label, }) => (
         <div className="flex items-center gap-2 pt-3">
             <input
                 type="number"
@@ -159,10 +214,10 @@ console.log(formData);
                 value={formData[name]}
             />
 
-            <div className="flex flex-col items-center">
+            <div className="flex gap-3">
                 <p>{label}</p>
-                {(name === 'regularPrice' || name === 'discountPrice') && (
-                    <span className="text-xs text-green-800"> ($/month)</span>
+                {(formData.type === 'rent' && (name === 'regularPrice' || name === 'discountPrice')) && (
+                    <span className="text-sm text-green-800"> ($/month)</span>
                 )}
             </div>
 
@@ -176,7 +231,10 @@ console.log(formData);
                 Create Listing
             </h1>
 
-            <form className='flex flex-col sm:flex-row gap-6 '>
+            <form
+                className='flex flex-col sm:flex-row gap-6'
+                onSubmit={handleSubmit}
+            >
 
                 <div className='flex flex-col gap-4 w-full sm:w-96 p-3'>
                     {/* Reuse inputStyles for common input styles */}
@@ -253,6 +311,17 @@ console.log(formData);
                         </div>
 
                         <div className={`${divStyle} w-[200px]`}>
+                            <div className='mt-3'>
+                                <p className={`${absolutepStyles}`}>
+                                    Bed & Bath
+                                </p>
+                                {inputInfoArray.slice(0, 2).map(inputInfo => (
+                                    <InputGroup key={inputInfo.name} {...inputInfo} />
+                                ))}
+                            </div>
+                        </div>
+
+                        <div className={`${divStyle} w-[200px]`}>
                             <div className='mt-5'>
                                 <p className={`${absolutepStyles}`}>
                                     Others
@@ -273,36 +342,35 @@ console.log(formData);
                             </div>
                         </div>
 
-                        <div className={`${divStyle} w-[200px]`}>
-                            <div className='mt-3'>
-                                <p className={`${absolutepStyles}`}>
-                                    Bed & Bath
-                                </p>
-                                {
-                                    inputInfoArray.slice(0, 2).map(inputInfo => (
-                                        <InputGroup key={inputInfo.name} {...inputInfo} />
-                                    ))
-                                }
-
-                            </div>
-                        </div>
                     </div>
 
                     <div className='relative bg-green-200 rounded'>
 
                         <div className='mt-3 p-3 pl-8'>
                             <p className={`${absolutepStyles}`}>
-                                Regular Price and Discounted Price
+                                Regular Price{formData.offer && ' and Discounted Price'}
                             </p>
-                            {inputInfoArray.slice(2).map(inputInfo => (
-                                <InputGroup key={inputInfo.name} {...inputInfo} />
-                            ))}
+                            <InputGroup
+                                name="regularPrice"
+                                label="Regular Price"
+                                min={100}
+                                max={2000}
+                            />
+                            {formData.offer && (
+                                <InputGroup
+                                    name="discountPrice"
+                                    label="Discounted Price"
+                                    min={0}
+                                    max={2000}
+                                />
+                            )}
                         </div>
-
                     </div>
+
                 </div>
 
                 <div className='flex flex-col flex-1 p-3 gap-4 text-slate-800'>
+
                     <p className='font-semibold'>
                         Images:
                         <span className='font-normal text-xs text-green-600 ml-2'>
@@ -367,11 +435,17 @@ console.log(formData);
                             </div>
                         ))
                     }
+                    {
+                        errorSubmit && <p className='text-red-700 text-sm'>{errorSubmit}</p>
+                    }
 
                     <button
-                        className={`${buttonStyles} bg-green-700 text-white`}
+                        disabled={loadingSubmit}
+                        className={`${buttonStyles} bg-green-700 text-white disabled:opacity-50`}
                     >
-                        Create List
+                        {
+                            loadingSubmit ? 'Creating...' : 'create'
+                        }
                     </button>
 
                 </div>
