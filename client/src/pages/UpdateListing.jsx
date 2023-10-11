@@ -2,7 +2,7 @@ import { getDownloadURL, getStorage, ref, uploadBytesResumable } from 'firebase/
 import React, { useEffect, useState } from 'react';
 import { app } from '../firebase';
 import { useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 // Define reusable CSS classes for common styles
 const inputStyles = 'border p-3 rounded-lg';
@@ -18,13 +18,15 @@ const inputInfoArray = [
     { name: 'bathrooms', label: 'Baths', min: 1, max: 10 },
 ];
 
-const CreateListing = () => {
+const UpdateListing = () => {
     const [files, setFiles] = useState([]);
     const [imageUploadError, setImageUploadError] = useState(false);
     const [imagePercent, setImagePercent] = useState(null);
     const [uploading, setUplaoding] = useState(false);
 
     const navigate = useNavigate();
+    const params = useParams();
+
     const { currentUser } = useSelector(state => state.user);
     const [errorSubmit, setErrorSubmit] = useState(false);
     const [loadingSubmit, setLoadingSubmit] = useState(false);
@@ -42,7 +44,24 @@ const CreateListing = () => {
         parking: false,
         furnished: false,
     });
-    console.log(formData);
+
+    useEffect(() => {
+        const fetchListing = async () => {
+            const listingId = params.listingId;
+            const res = await fetch(`/api/listing/get/${listingId}`);
+            const data = await res.json();
+
+
+            if (data.succes === false) {
+                console.log(data.message);
+                return;
+            }
+            setFormData(data);
+        };
+
+        fetchListing();
+
+    }, []);
 
     const handleImageSubmit = (e) => {
 
@@ -95,7 +114,7 @@ const CreateListing = () => {
             setLoadingSubmit(true);
             setErrorSubmit(false);
 
-            const res = await fetch('/api/listing/create', {
+            const res = await fetch(`/api/listing/update/${params.listingId}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -228,7 +247,7 @@ const CreateListing = () => {
         <main className='p-3 max-w-4xl mx-auto'>
 
             <h1 className='text-slate-800 text-3xl font-semibold text-left my-7 p-3 '>
-                Create Listing
+                Update Listing
             </h1>
 
             <form
@@ -444,7 +463,7 @@ const CreateListing = () => {
                         className={`${buttonStyles} bg-green-700 text-white disabled:opacity-50`}
                     >
                         {
-                            loadingSubmit ? 'Creating...' : 'create'
+                            loadingSubmit ? 'Updating...' : 'update'
                         }
                     </button>
 
@@ -454,4 +473,4 @@ const CreateListing = () => {
     )
 }
 
-export default CreateListing;
+export default UpdateListing;
