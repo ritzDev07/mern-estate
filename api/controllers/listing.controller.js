@@ -76,3 +76,34 @@ export const getListing = async (req, res, next) => {
     };
 
 };
+
+export const getListings = async (req, res, next) => {
+    try {
+        const {
+            limit = 9,
+            startIndex = 0,
+            offer = { $in: [false, true] },
+            furnished = { $in: [false, true] },
+            parking = { $in: [false, true] },
+            type = { $in: ['sale', 'rent'] },
+            searchTerm = '',
+            sort = 'createdAt',
+            order = 'desc',
+        } = req.query;
+
+        const listings = await Listing.find({
+            name: { $regex: searchTerm, $options: 'i' },
+            offer,
+            furnished,
+            parking,
+            type,
+        })
+            .sort({ [sort]: order })
+            .limit(limit)
+            .skip(startIndex);
+
+        return res.status(200).json(listings);
+    } catch (error) {
+        next(error);
+    }
+};

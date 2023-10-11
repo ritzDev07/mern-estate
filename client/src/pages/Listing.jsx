@@ -140,26 +140,26 @@ const Listing = () => {
                                 }
                             </p>
 
-                            <ul className='text-green-900 font-semibold text-sm flex flex-wrap items-center gap-4 sm:gap-6'>
-                                <li className='flex items-center gap-1 whitespace-nowrap '>
+                            <ul className={`font-semibold text-sm flex flex-wrap text-green-900 items-center gap-4 sm:gap-6 `}>
+                                <li className='flex items-center gap-1 whitespace-nowrap'>
                                     <FaBed className='text-lg' />
                                     {
-                                        listing.bedrooms > 1 ? `${listing.bedrooms} beds ` : `${listing.bedrooms} bed `
+                                        listing.bedrooms > 1 ? `${listing.bedrooms} beds ` : `${listing.bedrooms} bed`
                                     }
                                 </li>
-                                <li className='flex items-center gap-1 whitespace-nowrap '>
+                                <li className='flex items-center gap-1 whitespace-nowrap'>
                                     <FaBath className='text-lg' />
                                     {
-                                        listing.bathrooms > 1 ? `${listing.bathrooms} baths ` : `${listing.bathrooms} bath `
+                                        listing.bathrooms > 1 ? `${listing.bathrooms} baths ` : `${listing.bathrooms} bath`
                                     }
                                 </li>
-                                <li className='flex items-center gap-1 whitespace-nowrap '>
+                                <li className={`flex items-center gap-1 whitespace-nowrap ${!listing.parking ? 'text-red-900' : ''}`}>
                                     <FaParking className='text-lg' />
                                     {
                                         listing.parking ? 'Parking spot' : 'No Parking'
                                     }
                                 </li>
-                                <li className='flex items-center gap-1 whitespace-nowrap '>
+                                <li className={`flex items-center gap-1 whitespace-nowrap ${!listing.furnished ? 'text-red-900' : ''}`}>
                                     <FaChair className='text-lg' />
                                     {
                                         listing.furnished ? 'Furnished' : 'Unfurnished'
@@ -171,7 +171,9 @@ const Listing = () => {
                                     Contact landlord
                                 </button>
                             )}
-                            {contact && <Contact listing={listing} />}
+                            {
+                                contact && <Contact listing={listing} />
+                            }
                         </div>
                     </>
                 )
