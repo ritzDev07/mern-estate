@@ -1,10 +1,28 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { IoSearch } from 'react-icons/io5';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
 const Header = () => {
     const { currentUser } = useSelector(state => state.user);
+    const [searchTerm, setSearchTerm] = useState('');
+    const navigate = useNavigate();
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        const urlParams = new URLSearchParams(window.location.search);
+        urlParams.set('searchTerm', searchTerm);
+        const searchQuery = urlParams.toString();
+        navigate(`/search?${searchQuery}`);
+    };
+
+    useEffect(() => {
+        const urlParams = new URLSearchParams(location.search);
+        const searchTermFromUrl = urlParams.get('searchTerm');
+        if (searchTermFromUrl) {
+            setSearchTerm(searchTermFromUrl);
+        }
+    }, [location.search]);
 
     const menuItems = [
         { path: '/', label: 'Home', hidden: true },
@@ -38,15 +56,22 @@ const Header = () => {
         <header className='bg-slate-200 shadow-md'>
             <div className='flex justify-between items-center max-w-6xl mx-auto p-3'>
                 <Logo />
-                <form className='bg-slate-100 p-3 rounded-lg flex items-center'>
+                <form
+                    className='bg-slate-100 p-3 rounded-lg flex items-center'
+                    onSubmit={handleSubmit}
+                >
                     <input
                         type='text'
                         name='search'
                         id='search'
                         placeholder='search ...'
                         className='bg-transparent focus:outline-none w-36 sm:w-96'
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
                     />
-                    <IoSearch size={20} className=' text-slate-500' />
+                    <button>
+                        <IoSearch size={20} className=' text-slate-500' />
+                    </button>
                 </form>
                 <ul className='flex items-center'>
 
