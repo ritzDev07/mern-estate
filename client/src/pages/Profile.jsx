@@ -135,6 +135,23 @@ const Profile = () => {
 
     }
 
+    const handleListingDelete = async (listingId) => {
+        try {
+            const res = await fetch(`/api/listing/delete/${listingId}`, {
+                method: 'DELETE',
+            });
+            const data = await res.json();
+            if (data.success === false) {
+                console.log(data.message);
+                return;
+            }
+            setUserListings((prev) => prev.filter((listing) => listing._id !== listingId));
+
+        } catch (error) {
+            console.log(error)
+
+        }
+    }
 
 
     return (
@@ -246,15 +263,15 @@ const Profile = () => {
                 </form>
 
                 <div className='flex flex-col flex-1 p-3 gap-4 text-slate-800'>
-                    
+
                     <button
                         onClick={handleShowListings}
                         className='w-full rounded-lg text-green-800 border border-green-700 hover:opacity-95 hover:text-white hover:bg-green-700 uppercase text-center p-3'
                     >
                         {showListings ? 'Hide Listings' : 'Show Listings'}
-                    
+
                     </button>
-                    
+
                     <p className='text-red-600 text-center mt-3'>
                         {showListingsError ? 'Error showing listings' : ''}
                     </p>
@@ -277,7 +294,10 @@ const Profile = () => {
                                             <h2 className='w-20 text-slate-800 truncate'>{listing.name}</h2>
                                         </Link>
                                         <div className='flex flex-col items-center'>
-                                            <button className='text-red-700 p-2 rounded-md uppercase hover:bg-red-700 hover:text-white'>
+                                            <button
+                                                onClick={() => handleListingDelete(listing._id)}
+                                                className='text-red-700 p-2 rounded-md uppercase hover:bg-red-700 hover:text-white'
+                                            >
                                                 Delete
                                             </button>
                                             <button className='text-green-700 p-2 my-1 rounded-md uppercase hover:bg-green-700 hover:text-white'>
