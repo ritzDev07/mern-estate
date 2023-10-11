@@ -283,14 +283,14 @@ const Profile = () => {
                                         key={listing._id}
                                         className='border rounded-lg p-3 flex justify-between items-center my-3 hover:bg-green-100'
                                     >
-                                        <Link to={`/listings/${listing._id}`}>
+                                        <Link to={`/listing/${listing._id}`}>
                                             <img
                                                 src={listing.imageUrls[0]}
                                                 alt='listing covers'
                                                 className='h-20 w-32 object-contain'
                                             />
                                         </Link>
-                                        <Link to={`/listings/${listing._id}`}>
+                                        <Link to={`/listing/${listing._id}`}>
                                             <h2 className='w-20 text-slate-800 truncate'>{listing.name}</h2>
                                         </Link>
                                         <div className='flex flex-col items-center'>
