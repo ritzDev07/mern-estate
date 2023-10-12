@@ -1,5 +1,25 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import ListingItem from '../components/ListingItem';
+
+
+const typeOptions = [
+    { id: 'all', label: 'Rent & Sale' },
+    { id: 'rent', label: 'Rent' },
+    { id: 'sale', label: 'Sale' },
+];
+
+const amenityOptions = [
+    { id: 'parking', label: 'Parking' },
+    { id: 'furnished', label: 'Furnished' },
+];
+
+const sortOptions = [
+    { value: 'regularPrice_desc', label: 'Price high to low' },
+    { value: 'regularPrice_asc', label: 'Price low to high' },
+    { value: 'createdAt_desc', label: 'Latest' },
+    { value: 'createdAt_asc', label: 'Oldest' },
+];
 
 const Search = () => {
     const navigate = useNavigate();
@@ -106,22 +126,10 @@ const Search = () => {
         const searchQuery = urlParams.toString();
         navigate(`/search?${searchQuery}`);
     };
-    const typeOptions = [
-        { id: 'all', label: 'Rent & Sale' },
-        { id: 'rent', label: 'Rent' },
-        { id: 'sale', label: 'Sale' },
-    ];
-
-    const amenityOptions = [
-        { id: 'parking', label: 'Parking' },
-        { id: 'furnished', label: 'Furnished' },
-    ];
-
-    const sortOptions = ['Price high to low', 'Price low to high', 'Latest', 'Oldest'];
 
     return (
-        <div className='flex flex-col md:flex-row'>
-            <div className='p-7 border-b-2 md:border-r-2 md:min-h-screen'>
+        <div className='mx-auto flex flex-col md:flex-row'>
+            <div className='w-[350px] p-7 border-b-2 md:border-r-2 md:min-h-screen'>
                 <form
                     className='flex flex-col gap-8'
                     onSubmit={handleSubmit}
@@ -184,17 +192,17 @@ const Search = () => {
                         ))}
                     </fieldset>
                     <fieldset className='flex items-center gap-2'>
-                        <label htmlFor='sort_order' className='font-semibold'>
-                            Sort:
-                        </label>
+                        <label className='font-semibold'>Sort:</label>
                         <select
+                            onChange={handleChange}
+                            defaultValue={'created_at_desc'}
                             id='sort_order'
                             className='border rounded-lg p-3'
-                            onChange={handleChange}
-                            value={`${sidebardata.sort}_${sidebardata.order}`}
                         >
                             {sortOptions.map((option) => (
-                                <option key={option}>{option}</option>
+                                <option key={option.value} value={option.value}>
+                                    {option.label}
+                                </option>
                             ))}
                         </select>
                     </fieldset>
@@ -203,10 +211,26 @@ const Search = () => {
                     </button>
                 </form>
             </div>
-            <div>
+            <div className='w-full'>
                 <h1 className='text-3xl font-semibold p-3 text-slate-700 mt-5'>
                     Listing results:
                 </h1>
+                <div className='p-7 flex flex-wrap gap-4'>
+                    {!loading && listings.length === 0 && (
+                        <p className='text-xl text-slate-700'>No listing found!</p>
+                    )}
+                    {loading && (
+                        <p className='text-xl text-slate-700 text-center w-full'>
+                            Loading...
+                        </p>
+                    )}
+
+                    {!loading &&
+                        listings &&
+                        listings.map((listing) => (
+                            <ListingItem key={listing._id} listing={listing} />
+                        ))}
+                </div>
             </div>
         </div>
     );

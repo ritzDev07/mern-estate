@@ -6,7 +6,8 @@ import { Navigation } from 'swiper/modules';
 import 'swiper/css/bundle';
 import { useSelector } from 'react-redux';
 import Contact from '../components/Contact';
-import { FaBath, FaBed, FaChair, FaMapMarkerAlt, FaParking, FaShare } from 'react-icons/fa';
+import { FaBed, FaMapMarkerAlt, FaParking, FaShare } from 'react-icons/fa';
+import { MdBathroom, MdChair } from 'react-icons/md'
 
 const Listing = () => {
     SwiperCore.use([Navigation]);
@@ -148,7 +149,7 @@ const Listing = () => {
                                     }
                                 </li>
                                 <li className='flex items-center gap-1 whitespace-nowrap'>
-                                    <FaBath className='text-lg' />
+                                    <MdBathroom className='text-lg' />
                                     {
                                         listing.bathrooms > 1 ? `${listing.bathrooms} baths ` : `${listing.bathrooms} bath`
                                     }
@@ -160,7 +161,7 @@ const Listing = () => {
                                     }
                                 </li>
                                 <li className={`flex items-center gap-1 whitespace-nowrap ${!listing.furnished ? 'text-red-900' : ''}`}>
-                                    <FaChair className='text-lg' />
+                                    <MdChair className='text-lg' />
                                     {
                                         listing.furnished ? 'Furnished' : 'Unfurnished'
                                     }
