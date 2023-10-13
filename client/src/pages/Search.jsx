@@ -4,9 +4,9 @@ import ListingItem from '../components/ListingItem';
 
 
 const typeOptions = [
-    { id: 'all', label: 'Rent & Sale' },
+    { id: 'all', label: 'Rent & sell' },
     { id: 'rent', label: 'Rent' },
-    { id: 'sale', label: 'Sale' },
+    { id: 'sell', label: 'sell' },
 ];
 
 const amenityOptions = [
@@ -41,7 +41,7 @@ const Search = () => {
 
     useEffect(() => {
         window.scrollTo(0, 0);
-        
+
         const urlParams = new URLSearchParams(location.search);
         const searchTermFromUrl = urlParams.get('searchTerm');
         const typeFromUrl = urlParams.get('type');
@@ -96,7 +96,7 @@ const Search = () => {
         if (
             e.target.id === 'all' ||
             e.target.id === 'rent' ||
-            e.target.id === 'sale'
+            e.target.id === 'sell'
         ) {
             setSidebardata({ ...sidebardata, type: e.target.id });
         }

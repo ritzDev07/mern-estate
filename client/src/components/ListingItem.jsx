@@ -6,7 +6,7 @@ import { MdBathroom, MdChair } from 'react-icons/md'
 
 const ListingItem = ({ listing }) => {
     return (
-        <div className=' mx-auto w-full bg-white shadow-md hover:shadow-lg transition-shadow overflow-hidden rounded-lg sm:w-[320px]'>
+        <div className=' w-full bg-white shadow-md hover:shadow-lg transition-shadow overflow-hidden rounded-lg sm:w-[320px]'>
             <Link to={`/listing/${listing._id}`}>
                 <img
                     src={listing.imageUrls[0]}
