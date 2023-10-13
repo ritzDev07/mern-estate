@@ -153,8 +153,8 @@ const Search = () => {
     };
 
     return (
-        <div className='mx-auto flex flex-col md:flex-row'>
-            <div className='w-[350px] p-7 border-b-2 md:border-r-2 md:min-h-screen'>
+        <div className=' w-full flex flex-col md:flex-row justify-center'>
+            <div className='w-full sm:w-[400px] p-4 border-b-2 md:border-r-2 md:min-h-screen'>
                 <form
                     className='flex flex-col gap-8'
                     onSubmit={handleSubmit}
@@ -240,7 +240,7 @@ const Search = () => {
                 <h1 className='text-3xl font-semibold p-3 text-slate-700 mt-5'>
                     Listing results:
                 </h1>
-                <div className='p-7 flex flex-wrap gap-4'>
+                <div className='p-7 flex flex-wrap gap-2'>
                     {!loading && listings.length === 0 && (
                         <p className='text-xl text-slate-700'>No listing found!</p>
                     )}
