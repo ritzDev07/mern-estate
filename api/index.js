@@ -5,7 +5,10 @@ import userRouter from './routes/user.route.js';
 import authRouter from './routes/auth.route.js';
 import listingRouter from './routes/listing.route.js';
 import cookieParser from "cookie-parser";
-const __dirname = path.resolve();
+import path from 'path';
+
+
+
 
 
 dotenv.config();
@@ -16,6 +19,8 @@ mongoose.connect(process.env.MONGO).then(() => {
 }).catch((err) => {
     console.log(err);
 });
+
+const __dirname = path.resolve();
 
 // Create an instance of the Express application
 const app = express();
