@@ -66,7 +66,7 @@ const Home = () => {
                             >
                                 {/* header content here */}
                                 <header className='sm:w-[1100px] mx-auto flex flex-col gap-6 p-[40px] md:py-[200px]'>
-                                    <h1 className=' text-shadow-lg text-slate-200 font-bold text-3xl lg:text-6xl'>
+                                    <h1 className=' text-shadow-lg text-gray-200 font-bold text-3xl lg:text-6xl'>
                                         Discover Your <span className='text-green-800'>Ideal</span>
                                         <br />
                                         Home with Ease
@@ -88,7 +88,7 @@ const Home = () => {
 
             {/* listing results for offer, sell and rent */}
 
-            <div className='max-w-6xl mx-auto  flex flex-col gap-8'>
+            <div className='max-w-6xl my-5 mx-auto p-3 flex flex-col gap-8'>
 
                 {offerListings && offerListings.length > 0 && (
                     <div className=' mt-1'>

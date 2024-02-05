@@ -2,8 +2,8 @@ import React from 'react'
 
 const About = () => {
     return (
-        <div className='py-20 px-4 max-w-6xl mx-auto'>
-            <h1 className='text-3xl font-bold mb-4 text-slate-800'>About RitzEstate</h1>
+        <div className='py-20 px-10 max-w-6xl mx-auto'>
+            <h1 className=' text-3xl font-bold mb-4 text-slate-800'>About RitzEstate</h1>
             <p className='mb-4 text-slate-700'>
                 At RitzEstate, we are not just in the business of real estate; we are in the business of making your dreams come true. As a premier real estate agency, we specialize in helping our clients buy, sell, and rent properties in the most coveted neighborhoods. Our team of seasoned agents is passionate about delivering exceptional service and ensuring that the journey of buying and selling is as smooth as silk.
             </p>

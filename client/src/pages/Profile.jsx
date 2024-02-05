@@ -6,7 +6,7 @@ import { useDispatch } from 'react-redux';
 import { updateUserStart, updateUserSuccess, updateUserFailure, deleteUserStart, deleteUserSuccess, deleteUserFailure, signOut } from '../redux/user/userSlice';
 import { Link } from 'react-router-dom';
 
-const inputStyles = 'bg-slate-200 rounded-lg p-3 text-green-900 ';
+const inputStyles = 'bg-slate-100 rounded-lg p-3 text-green-900 ';
 const buttonStyles = 'bg-slate-700 text-white p-3 rounded-lg uppercase hover:opacity-95 disabled:opacity-80';
 
 const Profile = () => {

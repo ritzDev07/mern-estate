@@ -6,7 +6,7 @@ import { MdBathroom, MdChair } from 'react-icons/md'
 
 const ListingItem = ({ listing }) => {
     return (
-        <div className=' w-full bg-white shadow-md hover:shadow-lg transition-shadow overflow-hidden rounded-lg sm:w-[282px]'>
+        <div className=' w-full bg-white shadow-md hover:shadow-lg transition-shadow overflow-hidden rounded-lg sm:w-[275px]'>
             <Link to={`/listing/${listing._id}`}>
                 <img
                     src={listing.imageUrls[0]}
@@ -33,7 +33,7 @@ const ListingItem = ({ listing }) => {
                             : listing.regularPrice.toLocaleString('en-US')}
                         {listing.type === 'rent' && ' / month'}
                     </p>
-                    <div className=' text-sm flex gap-4 text-green-800'>
+                    <div className=' text-xs flex gap-4 text-green-800'>
                         <div className=' font-bold flex items-center gap-1'>
                             <FaBed />
                             {listing.bedrooms > 1

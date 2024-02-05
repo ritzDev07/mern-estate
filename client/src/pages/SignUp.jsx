@@ -71,11 +71,11 @@ const SignUp = () => {
     };
 
     return (
-        <div className=" h-screen bg-cover bg-center flex items-center text-green-950"
+        <div className="h-screen bg-cover bg-center flex items-center text-green-950"
             style={{ backgroundImage: `url(${signupImg})` }}
         >
-            <section className='p-7 rounded-lg max-w-lg mx-auto bg-slate-100 '>
-                <h1 className='text-lg text-center font-semibold mb-7'>
+            <section className='p-7 rounded-lg mx-auto bg-slate-100'>
+                <h1 className='w-[250px] md:w-[350px] text-lg text-center font-semibold mb-7'>
                     Welcome to RitzEstate
                 </h1>
                 {error && (
@@ -129,7 +129,7 @@ const SignUp = () => {
                         }
                     </button>
 
-                    <OAuth/>
+                    <OAuth />
 
                 </form>
 

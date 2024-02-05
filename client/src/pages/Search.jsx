@@ -155,94 +155,96 @@ const Search = () => {
     };
 
     return (
-        <div className=' w-full flex flex-col md:flex-row justify-center'>
-            <div className='w-full sm:w-[400px] p-4 border-b-2 md:border-r-2 md:min-h-screen'>
-                <form
-                    className='flex flex-col gap-8'
-                    onSubmit={handleSubmit}
-                >
-                    <div className='flex items-center gap-2'>
-                        <label htmlFor='searchTerm' className='whitespace-nowrap font-semibold'>
-                            Search Term:
-                        </label>
-                        <input
-                            type='text'
-                            id='searchTerm'
-                            placeholder='Search...'
-                            className='border rounded-lg p-3 w-full'
-                            value={sidebardata.searchTerm}
-                            onChange={handleChange}
-                        />
-                    </div>
-                    <fieldset className='flex gap-2 flex-wrap items-center'>
-                        <legend className='font-semibold'>Type:</legend>
-                        {typeOptions.map((option) => (
-                            <div key={option.id} className='flex gap-2'>
-                                <input
-                                    type='checkbox'
-                                    id={option.id}
-                                    className='w-5'
-                                    onChange={handleChange}
-                                    checked={
-                                        option.id === 'all'
-                                            ? sidebardata.type === 'all'
-                                            : sidebardata.type === option.id
-                                    }
-                                />
-                                <span>{option.label}</span>
-                            </div>
-                        ))}
-                    </fieldset>
-                    <div className='flex gap-2'>
-                        <input
-                            type='checkbox'
-                            id='offer'
-                            className='w-5'
-                            onChange={handleChange}
-                            checked={sidebardata.offer}
-                        />
-                        <span>Offer</span>
-                    </div>
-                    <fieldset className='flex gap-2 flex-wrap items-center'>
-                        <legend className='font-semibold'>Amenities:</legend>
-                        {amenityOptions.map((option) => (
-                            <div key={option.id} className='flex gap-2'>
-                                <input
-                                    type='checkbox'
-                                    id={option.id}
-                                    className='w-5'
-                                    onChange={handleChange}
-                                    checked={sidebardata[option.id]}
-                                />
-                                <span>{option.label}</span>
-                            </div>
-                        ))}
-                    </fieldset>
-                    <fieldset className='flex items-center gap-2'>
-                        <label className='font-semibold'>Sort:</label>
-                        <select
-                            onChange={handleChange}
-                            defaultValue={'created_at_desc'}
-                            id='sort_order'
-                            className='border rounded-lg p-3'
-                        >
-                            {sortOptions.map((option) => (
-                                <option key={option.value} value={option.value}>
-                                    {option.label}
-                                </option>
+        <div className='max-w-6xl flex flex-col md:flex-row justify-center mx-auto'>
+            <div className='w-full sm:w-[400px] p-3 border-b-2 md:border-r-2 '>
+                <div className='pt-5 sticky top-0 z-10'>
+                    <form
+                        className='flex flex-col gap-8'
+                        onSubmit={handleSubmit}
+                    >
+                        <div className='flex items-center gap-2'>
+                            <label htmlFor='searchTerm' className='whitespace-nowrap font-semibold'>
+                                Search Term:
+                            </label>
+                            <input
+                                type='text'
+                                id='searchTerm'
+                                placeholder='Search...'
+                                className='border rounded-lg p-3 w-full'
+                                value={sidebardata.searchTerm}
+                                onChange={handleChange}
+                            />
+                        </div>
+                        <fieldset className='flex gap-2 flex-wrap items-center'>
+                            <legend className='font-semibold'>Type:</legend>
+                            {typeOptions.map((option) => (
+                                <div key={option.id} className='flex gap-2'>
+                                    <input
+                                        type='checkbox'
+                                        id={option.id}
+                                        className='w-5'
+                                        onChange={handleChange}
+                                        checked={
+                                            option.id === 'all'
+                                                ? sidebardata.type === 'all'
+                                                : sidebardata.type === option.id
+                                        }
+                                    />
+                                    <span>{option.label}</span>
+                                </div>
                             ))}
-                        </select>
-                    </fieldset>
-                    <button className='bg-slate-700 text-white p-3 rounded-lg uppercase hover:opacity-95'>
-                        Search
-                    </button>
-                </form>
+                        </fieldset>
+                        <div className='flex gap-2'>
+                            <input
+                                type='checkbox'
+                                id='offer'
+                                className='w-5'
+                                onChange={handleChange}
+                                checked={sidebardata.offer}
+                            />
+                            <span>Offer</span>
+                        </div>
+                        <fieldset className='flex gap-2 flex-wrap items-center'>
+                            <legend className='font-semibold'>Amenities:</legend>
+                            {amenityOptions.map((option) => (
+                                <div key={option.id} className='flex gap-2'>
+                                    <input
+                                        type='checkbox'
+                                        id={option.id}
+                                        className='w-5'
+                                        onChange={handleChange}
+                                        checked={sidebardata[option.id]}
+                                    />
+                                    <span>{option.label}</span>
+                                </div>
+                            ))}
+                        </fieldset>
+                        <fieldset className='flex items-center gap-2'>
+                            <label className='font-semibold'>Sort:</label>
+                            <select
+                                onChange={handleChange}
+                                defaultValue={'created_at_desc'}
+                                id='sort_order'
+                                className='border rounded-lg p-3'
+                            >
+                                {sortOptions.map((option) => (
+                                    <option key={option.value} value={option.value}>
+                                        {option.label}
+                                    </option>
+                                ))}
+                            </select>
+                        </fieldset>
+                        <button className='bg-slate-700 text-white p-3 rounded-lg uppercase hover:opacity-95'>
+                            Search
+                        </button>
+                    </form>
+                </div>
             </div>
             <div className='w-full'>
                 <h1 className='text-3xl font-semibold p-3 text-slate-700 mt-5'>
                     Listing results:
                 </h1>
-                <div className='p-7 flex flex-wrap gap-2'>
+                <div className='p-1 flex flex-wrap gap-2'>
                     {!loading && listings.length === 0 && (
                         <p className='text-xl text-slate-700'>No listing found!</p>
                     )}
