@@ -12,9 +12,6 @@ const footerProductLinks = [
         name: "Careers",
     },
     {
-        name: "Store Locations",
-    },
-    {
         name: "Our Blog",
     },
     {
@@ -24,16 +21,13 @@ const footerProductLinks = [
 
 const footercompanyLinks = [
     {
-        name: "Game & Video",
+        name: "Recent Offers",
     },
     {
-        name: "Phone &Tablets",
+        name: "Recent For Rent",
     },
     {
-        name: "Computers & Laptop",
-    },
-    {
-        name: "Sport Watches",
+        name: "Recent For Sale",
     },
     {
         name: "Events",
@@ -49,9 +43,6 @@ const footerSupportLinks = [
     },
     {
         name: "Contact Us",
-    },
-    {
-        name: "Shipping",
     },
     {
         name: "Live chat",
@@ -90,7 +81,7 @@ const SocialMediaLinks = () => (
                 href={`https://${social.label.toLowerCase()}.com/`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className={`text-gray-200 hover:text-emerald-400 duration-300${index !== 0 ? ' ml-2' : ''}`}
+                className={`text-gray-200 hover:text-emerald-500 duration-300${index !== 0 ? ' ml-2' : ''}`}
             >
                 <social.Icon size={25} />
             </a>
@@ -100,26 +91,29 @@ const SocialMediaLinks = () => (
 
 
 const Footer = () => (
-    <footer className="bg-emerald-600 text-white ">
+    <footer className="bg-emerald-600 text-white mt-5 ">
 
         <section className="md:flex md:justify-between md:items-center sm:px-12 px-4 bg-emerald-900 py-7">
-            <h1 className="lg:text-4xl text-3xl md:mb-0 mb-6 lg:leading-normal font-semibold md:w-2/5">
-                <span className="text-emerald-600">Subscribe</span> us for more discounts and offers
-            </h1>
-            <div>
-                <input
-                    type="email"
-                    name="email"
-                    autoComplete='email'
-                    id="email"
-                    required
-                    placeholder="Enter your email ..."
-                    className="text-gray-600 sm:w-72 w-full sm:mr-5 mr-1 lg:mb-0 mb-4 py-2.5 rounded px-2 focus:outline-none"
-                />
-                <button className="bg-emerald-500 hover:bg-emerald-600 duration-300 px-5 py-2.5 rounded-md text-white md:w-auto w-full">
-                    submit
-                </button>
+            <div className='md:w-[1100px] md:flex justify-between mx-auto'>
+                <h1 className=" lg:text-4xl text-3xl md:mb-0 mb-6 lg:leading-normal font-semibold md:w-2/5">
+                    <span className="text-emerald-600">Subscribe</span> us for more discounts and offers
+                </h1>
+                <div className='mt-10'>
+                    <input
+                        type="email"
+                        name="email"
+                        autoComplete='email'
+                        id="email"
+                        required
+                        placeholder="Enter your email ..."
+                        className="text-gray-600 sm:w-72 w-full sm:mr-5 mr-1 lg:mb-0 mb-4 py-2.5 rounded px-2 focus:outline-none"
+                    />
+                    <button className="bg-emerald-500 hover:bg-emerald-600 duration-300 px-5 py-2.5 rounded-md text-white md:w-auto w-full">
+                        submit
+                    </button>
+                </div>
             </div>
+
         </section>
         <div className='max-w-6xl mx-auto'>
             <section className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-4 gap-6 sm:px-8 px-5 py-16 sm:text-center">

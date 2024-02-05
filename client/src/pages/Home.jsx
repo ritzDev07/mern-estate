@@ -50,7 +50,7 @@ const Home = () => {
 
     }, []);
     return (
-        <div>
+        <div className='w-full mx-auto'>
             {/* top */}
             <Swiper navigation autoplay={{ delay: 5000 }}>
                 {offerListings &&
@@ -62,16 +62,16 @@ const Home = () => {
                                     background: `url(${listing.imageUrls[0]}) center no-repeat`,
                                     backgroundSize: 'cover',
                                 }}
-                                className='h-[450px]'
+                                className=' h-[300px] md:h-[650px]'
                             >
                                 {/* header content here */}
-                                <header className='absolute top-5 left-0 flex flex-col gap-6 p-28  w-full '>
+                                <header className='sm:w-[1100px] mx-auto flex flex-col gap-6 p-[40px] md:py-[200px]'>
                                     <h1 className=' text-shadow-lg text-slate-200 font-bold text-3xl lg:text-6xl'>
                                         Discover Your <span className='text-green-800'>Ideal</span>
                                         <br />
                                         Home with Ease
                                     </h1>
-                                    <p className='text-shadow-md text-slate-200 text-xs sm:text-sm'>
+                                    <p className='drop-shadow-md text-slate-100 text-xs sm:text-lg'>
                                         RitzEstate - Your Perfect Place Awaits, Explore a Wide Range of Properties
                                     </p>
                                     <Link
@@ -88,11 +88,11 @@ const Home = () => {
 
             {/* listing results for offer, sell and rent */}
 
-            <div className='p-3 flex flex-col my-12 w-full'>
+            <div className='max-w-6xl mx-auto  flex flex-col gap-8'>
 
                 {offerListings && offerListings.length > 0 && (
-                    <div className=' mt-10'>
-                        <div className='my-3'>
+                    <div className=' mt-1'>
+                        <div className='my-1'>
                             <h2 className='text-2xl font-semibold text-slate-800'>Recent offers</h2>
                             <Link className='ml-2 text-sm text-green-800 hover:underline' to={'/search?offer=true'}>Show more offers</Link>
                         </div>
@@ -104,8 +104,8 @@ const Home = () => {
                     </div>
                 )}
                 {rentListings && rentListings.length > 0 && (
-                    <div className='mt-10 '>
-                        <div className='my-3'>
+                    <div className='mt-1 '>
+                        <div className='my-1'>
                             <h2 className='text-2xl font-semibold text-slate-800'>Recent places for rent</h2>
                             <Link className='ml-2 text-sm text-green-800 hover:underline' to={'/search?type=rent'}>Show more places for rent</Link>
                         </div>
@@ -117,8 +117,8 @@ const Home = () => {
                     </div>
                 )}
                 {sellListings && sellListings.length > 0 && (
-                    <div className='mt-10'>
-                        <div className='my-3'>
+                    <div className='mt-1'>
+                        <div className='my-1'>
                             <h2 className='text-2xl font-semibold text-slate-800'>Recent places for sell</h2>
                             <Link className='ml-2 text-sm text-green-800 hover:underline' to={'/search?type=sell'}>Show more places for sell</Link>
                         </div>
